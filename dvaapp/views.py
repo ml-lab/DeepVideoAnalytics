@@ -33,3 +33,35 @@ def handle_uploaded_file(f,name):
             destination.write(chunk)
     video.uploaded = True
     video.save()
+
+class VideoList(ListView):
+    model = Video
+
+
+class VideoDetail(DetailView):
+    model = Video
+
+    def get_context_data(self, **kwargs):
+        context = super(VideoDetail, self).get_context_data(**kwargs)
+        context['frame_list'] = Frame.objects.all().filter(video=self.object)
+        # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].bucket,'Key': context['object'].key},ExpiresIn=600)
+        url = ""
+        context['url'] = url
+        return context
+
+
+class FrameList(ListView):
+    model = Frame
+
+
+class FrameDetail(DetailView):
+    model = Frame
+
+    def get_context_data(self, **kwargs):
+        context = super(FrameDetail, self).get_context_data(**kwargs)
+        context['detection_list'] = Detection.objects.all().filter(frame=self.object)
+        # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].video.bucket,'Key': context['object'].key},ExpiresIn=600)
+        url = ""
+        context['url'] = url
+        return context
+

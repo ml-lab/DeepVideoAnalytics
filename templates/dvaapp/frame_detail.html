@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block page_content %}
+<section class="content-header" xmlns="http://www.w3.org/1999/html">
+</section>
+<section class="content">
+v<div class="row">
+    <div class="col-lg-6">
+        <div class="box">
+            <div class="box-header with-border">
+            <h2>List of Detections in {{ object.key }}</h2>
+            </div>
+            <div class="ibox-body">
+                <table class="table">
+                <thead>
+                <tr>
+                        <th>object</th>
+                        <th>confidence</th>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>w</th>
+                        <th>h</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d in detection_list %}
+                    <tr>
+                        <td>{{ d.object_name }} </td>
+                        <td>{{ d.confidence }} </td>
+                        <td>{{ d.x }} </td>
+                        <td>{{ d.y }} </td>
+                        <td>{{ d.w }} </td>
+                        <td>{{ d.h }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                </div>
+            </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="box">
+        <div class="box-header with-border">
+            <h2>Frame</h2>
+        </div>
+        <div class="box-body">
+            <img src="{{ url }}" style="width:100%" />
+        </div>
+        </div>
+    </div>
+
+
+</div>
+
+</section>
+{% endblock %}

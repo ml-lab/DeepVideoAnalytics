@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block page_content %}
+<section class="content-header" xmlns="http://www.w3.org/1999/html">
+</section>
+<section class="content">
+<div class="row">
+<div class="col-lg-12">
+<div class="box">
+<div class="box-header with-border">
+<h2>List of videos</h2>
+</div>
+<div class="box-body">
+<table class="table">
+<thead>
+        <td>key</td>
+        <td>bucket </td>
+        <td>frames</td>
+        <td>created</td>
+        <td>view</td>
+</thead>
+<tbody>
+{% for v in video_list %}
+    <tr>
+        <td>{{ v.key }} </td>
+        <td>{{ v.bucket }} </td>
+        <td>{{ v.frames }} </td>
+        <td>{{ v.created }}</td>
+        <td><a href="/videos/{{ v.pk }}">view</a></td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+</section>
+{% endblock %}
