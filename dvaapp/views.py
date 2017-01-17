@@ -27,8 +27,9 @@ def index(request):
 def handle_uploaded_file(f,name):
     video = Video()
     video.name = name
+    video.save()
     with open('temp_data/{}.mp4'.format(video.pk), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+    video.uploaded = True
     video.save()
-

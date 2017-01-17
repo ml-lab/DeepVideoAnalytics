@@ -7,13 +7,14 @@ class Video(models.Model):
     bucket = models.CharField(max_length=100,default="")
     key = models.CharField(max_length=100,default="")
     name = models.CharField(max_length=100,default="")
-    length_in_seconds = models.IntegerField()
+    length_in_seconds = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     metadata = models.TextField(default="")
-    frames = models.IntegerField()
+    frames = models.IntegerField(default=0)
     created = models.DateTimeField('date created', auto_now_add=True)
-    description = models.TextField()
+    description = models.TextField(default="")
+    uploaded = models.BooleanField(default=False)
 
 class Dataset(models.Model):
     bucket = models.CharField(max_length=100)
