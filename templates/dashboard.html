@@ -2,17 +2,27 @@
 {% load staticfiles %}
 {% block ng_control %}ng-controller="CanvasControls"{% endblock %}
 {% block page_content %}
-<section class="content-header">
+<section class="content-header" xmlns="http://www.w3.org/1999/html">
 </section>
 <section class="content">
 <div class="row">
     <div class="col-lg-3">
         <div class="box">
-            <div class="box-header with-border"><h4>Add videos</h4></div>
             <div class="box-body">
-                <a href="/add/videos" class="btn btn-success btn-block" style="white-space: normal"><i class="fa fa-upload"></i>&nbsp;&nbsp;Upload video file</a>
+                <form role="form"  method="post" enctype="multipart/form-data" action="#" >
+                    <div class="form-group">
+                    <label class="" for="id_name">Name:</label><input id="id_name" name="name" class="form-control" type="text" required="">
+                    </div>
+                    <div class="form-group">
+                    <label class="" for="id_file">File:</label><input id="id_file" name="file" class="btn btn-file" type="file" required="">
+                    </div>
+                    {% csrf_token %}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                </div>
+                </form>
+              </div>
             </div>
-        </div>
     </div>
     <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Videos</h4></div><div class="box-body text-right"><a href="/videos/">{{video_count}}</a></div></div></div>
     <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Frames</h4></div><div class="box-body  text-right">{{frame_count}}</div></div></div>
