@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html {% block ngblock %}{% endblock %}>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Deep Video Analytics</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+  <link rel="stylesheet" href="/static/dist/css/skins/skin-black.min.css">
+  <link rel="stylesheet" href="/static/custom-lte.css">
+    {% block page_css %}
+
+    {% endblock %}
+  <!--[if lt IE 9]>
+  <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-black sidebar-collapse">
+<div class="wrapper" {% block ng_control %} {% endblock %} >
+
+
+  <header class="main-header">
+
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+        <a href="/" class="logo">
+          <span class="logo-lg">Deep Video Analytics</span>
+        </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="hidden-xs">Account</span>
+               <span class="visible-xs"><i class="fa fa-user"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="user-body">
+                <div class="row">
+                </div>
+              </li>
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                </div>
+                <div class="pull-right">
+                    <a href="/accounts/logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out"></i> Log out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <!-- search form (Optional) -->
+      <!-- /.search form -->
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li><a href="/"><i class="fa fa-home"></i><span class="nav-label">Home</span></a></li>
+        <li><a href="/"><i class="fa fa fa-eye"></i><span class="nav-label">Video viewer</span></a></li>
+        <li><a href="/admin"><i class="fa fa-lock"></i><span class="nav-label">Admin</span></a></li>
+      </ul>
+    </section>
+  </aside>
+  <div class="content-wrapper">
+    {% block page_content %}
+  <!-- Content Wrapper. Contains page content -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+    </section>
+    <section class="content">
+
+
+    </section>
+    <!-- /.content -->
+    {% endblock %}
+  </div>
+
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">
+    </div>
+    <strong><a href="http://www.akshaybhat.com">Akshay Bhat, Cornell University</a>.</strong>.
+  </footer>
+</div>
+<!-- ./wrapper -->
+<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="/static/plugins/flot/jquery.flot.js"></script>
+<script src="/static/plugins/flot/jquery.flot.resize.js"></script>
+<script src="/static/plugins/flot/jquery.flot.pie.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/dist/js/app.min.js"></script>
+<script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+{% block page_js %}
+{% endblock %}
+</body>
+</html>

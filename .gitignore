@@ -1,0 +1,4 @@
+logs/*.log
+/darknet/
+/db.sqlite3
+/resources/

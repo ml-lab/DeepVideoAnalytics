@@ -1,0 +1,17 @@
+.main-header .logo {
+    width: 350px !important;
+    font-weight: 400 !important;
+    color: black !important;
+    text-align: left;
+}
+
+.main-header .navbar{
+    margin-left: 0px;
+}
+
+@media (max-width: 767px) {
+    .main-header .logo, .main-header .navbar {
+        width: 100%;
+        float: left;
+    }
+}

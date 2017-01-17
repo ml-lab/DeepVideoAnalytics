@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block ng_control %}ng-controller="CanvasControls"{% endblock %}
+{% block page_content %}
+<section class="content-header">
+</section>
+<section class="content">
+<div class="row">
+    <div class="col-lg-3">
+        <div class="box">
+            <div class="box-header with-border"><h4>Add videos</h4></div>
+            <div class="box-body">
+                <a href="/add/videos" class="btn btn-success btn-block" style="white-space: normal"><i class="fa fa-upload"></i>&nbsp;&nbsp;Upload video file</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Videos</h4></div><div class="box-body text-right"><a href="/videos/">{{video_count}}</a></div></div></div>
+    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Frames</h4></div><div class="box-body  text-right">{{frame_count}}</div></div></div>
+    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Detections</h4></div><div class="box-body  text-right">{{detection_count}}</div></div></div>
+    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Indexed</h4></div><div class="box-body  text-right">0</div></div></div>
+</div>
+<div class="row large-margin">
+    <div class="col-xs-1 col-sm-1 m-t" object-buttons-enabled="getSelected()" id="side_options">
+        <div class="outer">
+        <div class="middle">
+        <div class="inner">
+        <button type="button" class="btn btn-danger  btn-move"  id="clear" ng-click="confirmClear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clean editor</button>
+        <button type="button" class="btn btn-warning  btn-move"  id="clear_mask" ng-click="confirmClearMasks()"><i class="fa fa-trash"></i>&nbsp;Clear masks</button>
+        <button type="button" class="btn btn-info  btn-move"  id="reset_zoom" ng-click="resetZoom()"><i class="fa fa-refresh"></i>&nbsp;Reset Zoom</button>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  m-t input">
+        <div class="operations">
+            <form id="image-form"  onsubmit="return false;">
+                <input type='file'  id='imgfile' style="display:none"/>
+                <a type='button' class="btn btn-info" id='btnLoad' ng-click='load_image();'><i class="fa fa-image"></i>&nbsp;&nbsp;Add image</a>
+            </form>
+            <button  style="display:None" id="drawing-mode_f"
+              ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)"
+              ng-class="{'btn-inverse': getFreeDrawingMode(1)}" class="btn bg-green ">
+              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Highlight </button>
+            <button id="drawing-mode_b"
+              ng-click="setFreeDrawingMode(!getFreeDrawingMode(2),2)"
+              ng-class="{'btn-inverse': getFreeDrawingMode(2)}" class="btn btn-warning ">
+              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Exclude </button>
+            <div ng-show="getFreeDrawingMode(1)" class="drawing-mode">
+                <button id="drawing-mode_x" ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)" class="btn bg-red  stop_btn"> <i class="fa fa-close"></i>&nbsp;&nbsp;Stop Drawing!</button>
+            </div>
+
+        </div>
+        <div id="canvas-wrapper">
+            <canvas id="canvas"  width="500" height="500"></canvas>
+        </div>
+        <div class="operation_search">
+            <button href="" class="btn btn-warning" id="search_quick" ng-click="search_quick()"><i class="fa fa-search"></i>&nbsp;&nbsp;Approximate Seach by Image</button>
+            <button href="" class="btn btn-success" id="segment" ng-click="search()"><i class="fa fa-search"></i>&nbsp;&nbsp;Seach by Image</button>
+        </div>
+        <div id="status" ng-model="status" ng-show="checkStatus()" class="alert alert-info  alert-dismissable"><h4 class="h4status">{[ status ]}</h4>
+                <button type="button" class="close" ng-click="disableStatus()" aria-hidden="true">x</button>
+        </div>
+    </div>
+    <div class=" col-xs-1 col-sm-1 col-md-1 col-lg-1 m-t" object-buttons-enabled="getSelected()" id="side_options_2" style="padding-left:0px;">
+        <div class="outer">
+        <div class="middle">
+        <div class="inner">
+        <div ng-show="getFreeDrawingMode(2)" class="drawing-mode">
+            <button id="drawing-mode_x_2" ng-click="setFreeDrawingMode(!getFreeDrawingMode(2),2)" class="btn btn-warning btn-move stop_btn"> <i class="fa fa-close"></i>&nbsp;&nbsp;Stop Drawing!</button>
+        </div>
+        <div id="drawing-mode-wrapper"  class="drawing-mode">
+        <div id="drawing-mode-options"  ng-show="getFreeDrawingMode()">
+          <h5 style="text-align: center">Brush width</h5>
+          <input type="range" value="30" min="0" max="150" bind-value-to="drawingLineWidth">
+        </div>
+        </div>
+        <div ng-show="canvas.getActiveGroup()">
+            <button type="button" class="btn  btn-danger btn-object-action bg-maroon btn-move" id="remove-selected-group" ng-click="removeSelected()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</button>
+            <button type="button" class="btn  btn-object-action btn-move" id="deselect_group" ng-click="deselect()"><i class="fa fa-minus"></i>&nbsp;&nbsp;Deselect</button>
+        </div>
+        <div ng-show="canvas.getActiveObject()">
+            <button type="button" class="btn  btn-danger btn-object-action bg-maroon btn-move" id="remove-selected" ng-click="removeSelected()"><i class="fa fa-minus"></i>&nbsp;&nbsp;Delete</button>
+            <button type="button" class="btn  btn-info btn-object-action btn-move" id="duplicate" ng-click="duplicate()"><i class="fa fa-copy"></i>&nbsp;&nbsp;Duplicate</button>
+            <button id="send-backwards" class="btn btn-info  btn-object-action btn-move" ng-click="sendBackwards()"><i class="fa fa-step-backward"></i>&nbsp;&nbsp;Move back</button>
+            <button id="bring-forward" class="btn btn-info  btn-object-action btn-move"  ng-click="bringForward()"><i class="fa fa-step-forward"></i>&nbsp;&nbsp;Move forward</button>
+            <button id="send-to-back" class="btn btn-info  btn-object-action btn-move"  ng-click="sendToBack()"><i class="fa fa-backward"></i>&nbsp;&nbsp;Send to back</button>
+            <button id="bring-to-front" class="btn btn-info  btn-object-action btn-move"  ng-click="bringToFront()"><i class="fa fa-forward"></i>&nbsp;&nbsp;Bring to front</button>
+            <h5 style="text-align: center">Scale</h5>
+            <input value="100" max="200" type="range" bind-value-to="scale">
+            <div id="color-opacity-controls" ng-show="canvas.getActiveObject()">
+                <h5 style="text-align: center">Opacity</h5>
+                <input value="100" type="range" bind-value-to="opacity">
+            </div>
+            <button type="button" class="btn  btn-object-action bg-yellow btn-move" id="deselect" ng-click="deselect()"><i class="fa fa-minus"></i>&nbsp;&nbsp;Deselect</button>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class=" col-xs-12 col-sm-12 col-md-12 col-lg-6 m-t">
+        <div ng-repeat="row in results" class="row m-t" >
+            <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
+              <img style="max-height:95%;max-width:98%" ng-src="/static/examples/{[ item ]}" />
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}
+
+
+{% block page_js %}
+    <script>
+        var payload = "{{ payload }}";
+    </script>
+    <script src="/static/plugins/jquery.mousewheel.min.js"></script>
+    <script src="/static/plugins/underscore-min.js"></script>
+    <script src="/static/fabric/fabric.js"></script>
+    <script type="text/javascript" src="/static/vision/jsfeat-min.js"></script>
+    <script type="text/javascript" src="/static/vision/slic-segmentation.js"></script>
+    <script type="text/javascript" src="/static/vision/pf-segmentation.js"></script>
+    <script type="text/javascript" src="/static/vision/compatibility.js"></script>
+    <script type="text/javascript" src="/static/vision/dat.gui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="/static/app/utils.js"></script>
+    <script src="/static/app/app_config.js"></script>
+    <script src="/static/app/controller.js"></script>
+    <script src="/static/app/app.js"></script>
+{% endblock %}
+{% block ngblock %}ng-app="cveditor"{% endblock %}
+{% block page_css %}
+    <link rel="stylesheet" href="/static/app/app.css">
+{% endblock %}
