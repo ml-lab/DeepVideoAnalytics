@@ -1,5 +1,6 @@
 logs/*.log
 /darknet/
+/dvalib/darknet
 /db.sqlite3
 /resources/
 temp_data/*.mp4
