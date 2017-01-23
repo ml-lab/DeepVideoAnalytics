@@ -41,6 +41,7 @@ class Detection(models.Model):
     y = models.IntegerField(default=0)
     h = models.IntegerField(default=0)
     w = models.IntegerField(default=0)
+    metadata = models.TextField(default="")
 
 
 class IndexEntry(models.Model):

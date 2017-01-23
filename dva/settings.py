@@ -26,6 +26,7 @@ SECRET_KEY = 'gwi1$a3#v9pj=mxydc33p-3jup%0kyn26i*tqe9q*^(rp2$j&^'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+BROKER_URL = 'amqp://{}:{}@localhost//'.format('dvuser','localpass')
 
 
 # Application definition
