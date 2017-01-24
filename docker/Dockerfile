@@ -62,4 +62,3 @@ RUN pip install --upgrade pip \
 ARG CACHE_DATE=not_a_date
 RUN  git clone https://github.com/akshayubhat/DeepVideoAnalytics /root/DVA
 WORKDIR "/root/DVA"
-CMD ["sleep","999"]

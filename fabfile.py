@@ -9,16 +9,6 @@ logging.basicConfig(level=logging.INFO,
                     filemode='a')
 
 
-@task
-def connect():
-    """
-    Creates connect.sh for the current host
-    :return:
-    """
-    fh = open("connect.sh",'w')
-    fh.write("#!/bin/bash\n"+"ssh -i "+env.key_filename+" "+"ubuntu"+"@"+HOST+"\n")
-    fh.close()
-
 
 @task
 def shell():
@@ -52,10 +42,17 @@ def worker(queue_name,conc=1):
         command = "source ~/.profile && "+command
     local(command=command)
 
-
 @task
 def server():
-    local('python manage.py runserver')
+    local("python manage.py runserver")
+
+@task
+def start_server_container():
+    local('sleep 60')
+    migrate()
+    local('echo "from django.contrib.auth.models import User; User.objects.create_superuser(\'dvauser\', \'dvauser@akshaybhat.com\', \'localpass\')" | python manage.py shell')
+    local('python manage.py runserver 0.0.0.0:8000')
+
 
 
 # @task

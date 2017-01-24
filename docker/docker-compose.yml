@@ -12,7 +12,7 @@
        - RABBITMQ_DEFAULT_PASS=localpass
    web:
      build: .
-     command: python manage.py runserver 0.0.0.0:8000
+     command: fab start_server_container
      ports:
        - "8000:8000"
      depends_on:
