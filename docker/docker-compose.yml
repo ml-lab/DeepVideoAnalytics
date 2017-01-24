@@ -12,7 +12,7 @@
        - RABBITMQ_DEFAULT_PASS=localpass
    web:
      build: .
-     command: git pull && fab start_server_container
+     command: bash -c "git pull && fab start_server_container"
      ports:
        - "8000:8000"
      depends_on:

@@ -50,7 +50,6 @@ def server():
 def start_server_container():
     local('sleep 60')
     migrate()
-    # local('echo "from django.contrib.auth.models import User; User.objects.create_superuser(\'dvauser\', \'dvauser@akshaybhat.com\', \'localpass\')" | python manage.py shell --no-confirm-exit')
     local('python manage.py runserver 0.0.0.0:8000')
 
 
