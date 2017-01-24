@@ -65,10 +65,10 @@ RUN apt-get update && apt-get install -y python-software-properties software-pro
 USER postgres
 RUN /etc/init.d/postgresql start &&\
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    psql --command "CREATE USER chpguser WITH PASSWORD 'chpgdb';ALTER ROLE chpguser SET client_encoding TO 'utf8';ALTER ROLE chpguser SET default_transaction_isolation TO 'read committed';ALTER ROLE chpguser SET timezone TO 'UTC';" &&\
+    psql --command "CREATE USER dvauser WITH PASSWORD 'localpass';ALTER ROLE dvauser SET client_encoding TO 'utf8';ALTER ROLE dvauser SET default_transaction_isolation TO 'read committed';ALTER ROLE dvauser SET timezone TO 'UTC';" &&\
     createdb -O docker docker &&\
-    createdb -O chpguser chpglocal &&\
-    psql --command "GRANT ALL PRIVILEGES ON DATABASE chpglocal TO chpguser;"
+    createdb -O dvauser dvadb &&\
+    psql --command "GRANT ALL PRIVILEGES ON DATABASE dvadb TO dvauser;"
 RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.4/main/pg_hba.conf
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.4/main/postgresql.conf
 USER root
