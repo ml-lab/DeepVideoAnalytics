@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.conf import settings
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 import requests
+import os
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,DetailView
 from django.utils.decorators import method_decorator
@@ -28,7 +30,8 @@ def handle_uploaded_file(f,name):
     video = Video()
     video.name = name
     video.save()
-    with open('temp_data/{}.mp4'.format(video.pk), 'wb+') as destination:
+    os.mkdir('{}/{}'.format(settings.MEDIA_ROOT,video.pk))
+    with open('{}/{}/{}.mp4'.format(settings.MEDIA_ROOT,video.pk,video.pk), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     video.uploaded = True
@@ -45,8 +48,7 @@ class VideoDetail(DetailView):
         context = super(VideoDetail, self).get_context_data(**kwargs)
         context['frame_list'] = Frame.objects.all().filter(video=self.object)
         # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].bucket,'Key': context['object'].key},ExpiresIn=600)
-        url = ""
-        context['url'] = url
+        context['url'] = '{}/{}/{}.mp4'.format(settings.MEDIA_URL,self.object.pk,self.object.pk)
         return context
 
 
@@ -62,6 +64,6 @@ class FrameDetail(DetailView):
         context['detection_list'] = Detection.objects.all().filter(frame=self.object)
         # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].video.bucket,'Key': context['object'].key},ExpiresIn=600)
         url = ""
-        context['url'] = url
+        context['url'] = '/media/'
         return context
 

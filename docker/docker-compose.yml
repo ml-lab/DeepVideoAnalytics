@@ -1,0 +1,20 @@
+ version: '2'
+ services:
+   db:
+     image: postgres
+#   environment:
+#     - POSTGRES_USER=dvauser
+#     - POSTGRES_PASSWORD=localpass
+   rabbit:
+     image: rabbitmq
+   environment:
+     - RABBITMQ_DEFAULT_USER=dvauser
+     - RABBITMQ_DEFAULT_PASS=localpass
+   web:
+     build: .
+     command: python manage.py runserver 0.0.0.0:8000
+     ports:
+       - "8000:8000"
+     depends_on:
+       - db
+       - rabbit

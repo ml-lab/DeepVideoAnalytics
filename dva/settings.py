@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
-import os,dj_database_url
+import os,dj_database_url,sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +26,16 @@ SECRET_KEY = 'gwi1$a3#v9pj=mxydc33p-3jup%0kyn26i*tqe9q*^(rp2$j&^'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-BROKER_URL = 'amqp://{}:{}@localhost//'.format('dvauser','localpass')
+if sys.platform == 'darwin':
+    BROKER_URL = 'amqp://{}:{}@localhost//'.format('dvauser','localpass')
+else:
+    BROKER_URL = 'amqp://{}:{}@rabbit//'.format('dvauser', 'localpass')
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 
 # Application definition
@@ -39,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dvaapp',
+    'djcelery'
 ]
 
 MIDDLEWARE = [
@@ -76,17 +86,28 @@ WSGI_APPLICATION = 'dva.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dvadb',
-        'USER': 'dvauser',
-        'PASSWORD': 'localpass',
-        'HOST': 'localhost',
-        'PORT': '',
+if sys.platform == 'darwin':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'dvadb',
+            'USER': 'dvauser',
+            'PASSWORD': 'localpass',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'dvadb',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': 'db',
+            'PORT': 5432,
+        }
+    }
 
 
 
@@ -128,6 +149,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+MEDIA_ROOT = '/Users/aub3/media/' if sys.platform == 'darwin' else os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
