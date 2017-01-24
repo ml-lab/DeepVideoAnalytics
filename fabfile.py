@@ -37,7 +37,7 @@ def local_static():
 
 @task
 def migrate():
-    local('run python manage.py migrate')
+    local('python manage.py migrate')
 
 
 def setup_django():
@@ -57,9 +57,6 @@ def worker(queue_name,conc=1):
 def server():
     local('python manage.py runserver')
 
-@task
-def rmq():
-    local('python manage.py runserver')
 
 # @task
 # def setup_test(sure,local_test=False):
