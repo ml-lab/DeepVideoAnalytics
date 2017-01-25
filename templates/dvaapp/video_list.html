@@ -6,15 +6,16 @@
 </section>
 <section class="content">
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-10 col-lg-offset-1 col-md-12">
         <div class="box">
             <div class="box-header with-border">
             <h2>List of videos</h2>
             </div>
             <div class="box-body">
-                <table class="table">
+                <table class="table dataTables">
                 <thead>
                 <tr>
+                    <th>name</th>
                     <th>key</th>
                     <th>bucket </th>
                     <th>duration</th>
@@ -27,6 +28,7 @@
                 <tbody>
                 {% for v in video_list %}
                     <tr>
+                        <td>{{ v.name }} </td>
                         <td>{{ v.key }} </td>
                         <td>{{ v.bucket }} </td>
                         <td class="text-right">{{ v.length_in_seconds }} </td>
@@ -43,4 +45,11 @@
     </div>
 </div>
 </section>
+{% endblock %}
+{% block page_js%}
+<script>
+    $(document).ready(function() {
+        InitializeTables();
+    })
+</script>
 {% endblock %}

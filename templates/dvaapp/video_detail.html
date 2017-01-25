@@ -12,7 +12,7 @@
             <h2>List of frames with {{ object.key }}</h2>
             </div>
             <div class="box-body">
-                <table class="table">
+                <table class="table dataTables">
                 <thead>
                 <tr>
                         <th>key</th>
@@ -47,4 +47,11 @@
     </div>
 </div>
 </section>
+{% endblock %}
+{% block page_js%}
+<script>
+    $(document).ready(function() {
+        InitializeTables();
+    })
+</script>
 {% endblock %}
