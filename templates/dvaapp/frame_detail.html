@@ -4,11 +4,11 @@
 <section class="content-header" xmlns="http://www.w3.org/1999/html">
 </section>
 <section class="content">
-v<div class="row">
+<div class="row">
     <div class="col-lg-6">
         <div class="box">
             <div class="box-header with-border">
-            <h2>List of Detections in {{ object.key }}</h2>
+            <h4>List of Detections in <a href="/videos/{{ object.video.pk }}">{{ object.video.name }}</a> at {{ object.time_seconds }} seconds </h4>
             </div>
             <div class="ibox-body">
                 <table class="table">

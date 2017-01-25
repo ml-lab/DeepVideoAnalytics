@@ -25,9 +25,6 @@ class WVideo(object):
         with open(self.local_path, 'w') as fh:
             s3key.get_contents_to_file(fh)
 
-    def delete(self):
-        os.remove(self.local_path)
-
     def get_metadata(self):
         command = ['ffprobe','-i',self.local_path,'-print_format','json','-show_format','-show_streams','-v','quiet']
         p = sp.Popen(command,stdout=sp.PIPE,stderr=sp.STDOUT,stdin=sp.PIPE)

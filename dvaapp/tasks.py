@@ -71,7 +71,6 @@ def extract_frames(video_id):
     finished.completed = True
     finished.video_id = video_id
     finished.save()
-    v.delete()
     return 0
 
 

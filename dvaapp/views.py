@@ -68,8 +68,7 @@ class FrameDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FrameDetail, self).get_context_data(**kwargs)
         context['detection_list'] = Detection.objects.all().filter(frame=self.object)
-        # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].video.bucket,'Key': context['object'].key},ExpiresIn=600)
-        url = ""
-        context['url'] = '/media/'
+        context['video'] = self.object.video
+        context['url'] = '{}/{}/frames/{}.jpg'.format(settings.MEDIA_URL,self.object.video.pk,self.object.time_seconds)
         return context
 

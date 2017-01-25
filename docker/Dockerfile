@@ -1,14 +1,16 @@
 FROM tensorflow/tensorflow:0.11.0
 
 MAINTAINER Akshay Bhat <akshayubhat@gmail.com>
-
-RUN add-apt-repository ppa:george-edison55/cmake-3.x && apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y wget
+WORKDIR "/bin/"
+RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+RUN tar xvfJ ffmpeg-release-64bit-static.tar.xz
+RUN mv ffmpeg-3.2.2-64bit-static/* .
+WORKDIR "/root/
+RUN apt-get update && apt-get install -y \
 		bc \
 		build-essential \
-		cmake \
 		curl \
-		g++ \
-		gfortran \
 		git \
 		libffi-dev \
 		libssl-dev \
@@ -26,10 +28,6 @@ RUN add-apt-repository ppa:george-edison55/cmake-3.x && apt-get update && apt-ge
 		libboost-all-dev \
 		libgflags-dev \
 		libgoogle-glog-dev \
-		libsnappy-dev \
-		libleveldb-dev \
-		libprotobuf-dev \
-		protobuf-compiler \
 		&& \
 	apt-get clean && \
 	apt-get autoremove && \
@@ -39,6 +37,7 @@ RUN apt-get update && apt-get install -y libpq-dev && \
 	apt-get clean && \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
+
 RUN pip install --upgrade pip \
                           fabric \
                           django \
@@ -54,14 +53,9 @@ RUN pip install --upgrade pip \
                           raven \
                           psycopg2 \
                           requests \
-                          plyvel \
                           pandas \
                           boto3 \
                           protobuf \
                           humanize
-WORKDIR "/bin/"
-RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
-RUN tar xvfJ ffmpeg-release-64bit-static.tar.xz
-RUN mv "ffmpeg-3.2.2-64bit-static/*" .
 RUN  git clone https://github.com/akshayubhat/DeepVideoAnalytics /root/DVA
 WORKDIR "/root/DVA"
