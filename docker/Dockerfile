@@ -59,5 +59,9 @@ RUN pip install --upgrade pip \
                           boto3 \
                           protobuf \
                           humanize
+WORKDIR "/bin/"
+RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+RUN tar xvfJ ffmpeg-release-64bit-static.tar.xz
+RUN mv "ffmpeg-3.2.2-64bit-static/*" .
 RUN  git clone https://github.com/akshayubhat/DeepVideoAnalytics /root/DVA
 WORKDIR "/root/DVA"

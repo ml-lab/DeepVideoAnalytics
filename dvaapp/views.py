@@ -34,6 +34,7 @@ def handle_uploaded_file(f,name):
     os.mkdir('{}/{}/video/'.format(settings.MEDIA_ROOT,video.pk))
     os.mkdir('{}/{}/frames/'.format(settings.MEDIA_ROOT,video.pk))
     os.mkdir('{}/{}/indexes/'.format(settings.MEDIA_ROOT, video.pk))
+    os.mkdir('{}/{}/detections/'.format(settings.MEDIA_ROOT, video.pk))
     os.mkdir('{}/{}/audio/'.format(settings.MEDIA_ROOT, video.pk))
     primary_key = video.pk
     with open('{}/{}/video/{}.mp4'.format(settings.MEDIA_ROOT,video.pk,video.pk), 'wb+') as destination:
@@ -53,7 +54,6 @@ class VideoDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(VideoDetail, self).get_context_data(**kwargs)
         context['frame_list'] = Frame.objects.all().filter(video=self.object)
-        # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].bucket,'Key': context['object'].key},ExpiresIn=600)
         context['url'] = '{}/{}/video/{}.mp4'.format(settings.MEDIA_URL,self.object.pk,self.object.pk)
         return context
 
