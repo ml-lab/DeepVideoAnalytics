@@ -1,7 +1,5 @@
-import boto,shlex,json,os
+import shlex,json,os
 import subprocess as sp
-from boto.s3.key import Key
-s3_connection = boto.connect_s3()
 
 
 class WVideo(object):
@@ -18,12 +16,6 @@ class WVideo(object):
         self.width = None
         self.height = None
         self.metadata = {}
-
-    def download(self):
-        bucket = s3_connection.get_bucket(self.bucket)
-        s3key = bucket.get_key(self.key)
-        with open(self.local_path, 'w') as fh:
-            s3key.get_contents_to_file(fh)
 
     def get_metadata(self):
         command = ['ffprobe','-i',self.local_path,'-print_format','json','-show_format','-show_streams','-v','quiet']
