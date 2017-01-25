@@ -59,6 +59,5 @@ RUN pip install --upgrade pip \
                           boto3 \
                           protobuf \
                           humanize
-ARG CACHE_DATE=not_a_date
 RUN  git clone https://github.com/akshayubhat/DeepVideoAnalytics /root/DVA
 WORKDIR "/root/DVA"

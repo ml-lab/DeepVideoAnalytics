@@ -37,6 +37,10 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+Q_EXTRACTOR = 'qextract'
+Q_INDEXER = 'qindexer'
+Q_DETECTOR = 'qdetector'
+
 
 # Application definition
 

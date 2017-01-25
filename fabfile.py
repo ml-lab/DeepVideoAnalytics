@@ -1,5 +1,4 @@
 import os,logging
-from fabric.state import env
 from fabric.api import task,local,run,put,get,lcd,cd,sudo
 import django,sys
 logging.basicConfig(level=logging.INFO,
@@ -30,10 +29,6 @@ def migrate():
     local('python manage.py migrate')
 
 
-def setup_django():
-    os.environ["DJANGO_SETTINGS_MODULE"] = "dva.settings"
-    django.setup()
-
 @task
 def worker(queue_name,conc=1):
     conc = int(conc)
@@ -41,6 +36,7 @@ def worker(queue_name,conc=1):
     if sys.platform != 'darwin':
         command = "source ~/.profile && "+command
     local(command=command)
+
 
 @task
 def server():
@@ -50,6 +46,7 @@ def server():
 def start_server_container():
     local('sleep 60')
     migrate()
+    local('python start_worker_extractor &')
     local('python manage.py runserver 0.0.0.0:8000')
 
 

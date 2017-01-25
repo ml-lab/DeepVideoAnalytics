@@ -24,12 +24,13 @@ class Dataset(models.Model):
     created = models.DateTimeField('date created', auto_now_add=True)
     description = models.TextField()
 
+
 class Frame(models.Model):
     video = models.ForeignKey(Video,null=True)
     dataset = models.ForeignKey(Dataset,null=True)
     time_seconds = models.IntegerField()
-    key = models.CharField(max_length=200)
-    bucket = models.CharField(max_length=200)
+    name = models.CharField(max_length=200,null=True)
+
 
 class Detection(models.Model):
     video = models.ForeignKey(Video,null=True)

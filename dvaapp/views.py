@@ -8,7 +8,7 @@ from django.views.generic import ListView,DetailView
 from django.utils.decorators import method_decorator
 from .forms import UploadFileForm
 from .models import Video,Frame,Detection
-
+from .tasks import extract_frames
 
 def index(request):
     if request.method == 'POST':
@@ -31,11 +31,17 @@ def handle_uploaded_file(f,name):
     video.name = name
     video.save()
     os.mkdir('{}/{}'.format(settings.MEDIA_ROOT,video.pk))
-    with open('{}/{}/{}.mp4'.format(settings.MEDIA_ROOT,video.pk,video.pk), 'wb+') as destination:
+    os.mkdir('{}/{}/video/'.format(settings.MEDIA_ROOT,video.pk))
+    os.mkdir('{}/{}/frames/'.format(settings.MEDIA_ROOT,video.pk))
+    os.mkdir('{}/{}/indexes/'.format(settings.MEDIA_ROOT, video.pk))
+    os.mkdir('{}/{}/audio/'.format(settings.MEDIA_ROOT, video.pk))
+    primary_key = video.pk
+    with open('{}/{}/video/{}.mp4'.format(settings.MEDIA_ROOT,video.pk,video.pk), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     video.uploaded = True
     video.save()
+    extract_frames.apply_async(args=[primary_key],queue=settings.Q_EXTRACTOR)
 
 class VideoList(ListView):
     model = Video
@@ -48,7 +54,7 @@ class VideoDetail(DetailView):
         context = super(VideoDetail, self).get_context_data(**kwargs)
         context['frame_list'] = Frame.objects.all().filter(video=self.object)
         # url = boto_client.generate_presigned_url('get_object',Params={'Bucket': context['object'].bucket,'Key': context['object'].key},ExpiresIn=600)
-        context['url'] = '{}/{}/{}.mp4'.format(settings.MEDIA_URL,self.object.pk,self.object.pk)
+        context['url'] = '{}/{}/video/{}.mp4'.format(settings.MEDIA_URL,self.object.pk,self.object.pk)
         return context
 
 
