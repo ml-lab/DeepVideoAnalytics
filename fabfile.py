@@ -49,33 +49,3 @@ def start_server_container():
     local('python start_extractor.py &')
     local('python start_indexer.py &')
     local('python manage.py runserver 0.0.0.0:8000')
-
-
-
-# @task
-# def setup_test(sure,local_test=False):
-#     if sure == 'yes':
-#         setup_django()
-#         from dva_app.models import Video,Frame,Detection
-#         from dva_app.tasks import extract_frames,Q_EXTRACTOR
-#         Detection.objects.all().delete()
-#         Frame.objects.all().delete()
-#         Video.objects.all().delete()
-#         for k in range(1,20):
-#             v = Video()
-#             v.key = "videos/1{}.mp4".format(k)
-#             v.bucket = "aub3dca"
-#             v.length_in_seconds = 0
-#             v.frames = 0
-#             v.save()
-#             if (not local_test) or k == 1:
-#                 extract_frames.apply_async(args=[v.id,], queue=Q_EXTRACTOR)
-#
-#
-# @task
-# def test():
-#     setup_django()
-#     from dca_app.models import Video
-#     from dca_app.tasks import perform_indexing,Q_INDEXER
-#     for v in Video.objects.all.filter(key="videos/1.mp4"):
-#         perform_indexing.apply_async(args=[v.id,], queue=Q_INDEXER)

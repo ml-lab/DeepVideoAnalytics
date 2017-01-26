@@ -40,6 +40,7 @@ def index(request):
     context = { 'form' : form }
     context['video_count'] = Video.objects.count()
     context['frame_count'] = Frame.objects.count()
+    context['query_count'] = Query.objects.count()
     context['detection_count'] = Detection.objects.count()
     return render(request, 'dashboard.html', context)
 
