@@ -14,10 +14,6 @@ def shell():
     local('python manage.py shell')
 
 
-@task
-def make_migrate():
-    local('python manage.py makemigrations')
-
 
 @task
 def local_static():
@@ -26,6 +22,7 @@ def local_static():
 
 @task
 def migrate():
+    local('python manage.py makemigrations')
     local('python manage.py migrate')
 
 

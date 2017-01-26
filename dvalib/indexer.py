@@ -18,7 +18,7 @@ class Indexer(object):
     def load(self):
         if self.net is None:
             logging.warning("Loading the network")
-            self.net = resnet.resnet18(pretrained=True)
+            self.net = resnet.resnet50(pretrained=True)
             self.transform = transforms.Compose([
                 transforms.CenterCrop(224),
                 transforms.ToTensor(),
@@ -88,5 +88,7 @@ class Indexer(object):
         return [self.files[k] for i,k in enumerate(ranked[:n])]
 
 
+    def index_frames(self,frames):
+        pass
 
 INDEXER = Indexer()

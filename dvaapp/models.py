@@ -16,18 +16,9 @@ class Video(models.Model):
     description = models.TextField(default="")
     uploaded = models.BooleanField(default=False)
 
-class Dataset(models.Model):
-    bucket = models.CharField(max_length=100)
-    key = models.CharField(max_length=100)
-    metadata = models.TextField(default="")
-    frames = models.IntegerField()
-    created = models.DateTimeField('date created', auto_now_add=True)
-    description = models.TextField()
-
 
 class Frame(models.Model):
     video = models.ForeignKey(Video,null=True)
-    dataset = models.ForeignKey(Dataset,null=True)
     time_seconds = models.IntegerField()
     name = models.CharField(max_length=200,null=True)
 
@@ -40,7 +31,6 @@ class Query(models.Model):
 
 class Detection(models.Model):
     video = models.ForeignKey(Video,null=True)
-    dataset = models.ForeignKey(Dataset,null=True)
     frame = models.ForeignKey(Frame)
     object_name = models.CharField(max_length=100)
     confidence = models.FloatField(default=0.0)
@@ -51,23 +41,15 @@ class Detection(models.Model):
     metadata = models.TextField(default="")
 
 
-class IndexEntry(models.Model):
+class IndexEntries(models.Model):
     video = models.ForeignKey(Video,null=True)
-    dataset = models.ForeignKey(Dataset,null=True)
-    detection = models.ForeignKey(Detection,null=True)
-    frame = models.ForeignKey(Frame)
+    framelist = models.CharField(max_length=100)
     algorithm = models.CharField(max_length=100)
-    d = models.IntegerField(default=0)
-    x = models.IntegerField(default=0)
-    y = models.IntegerField(default=0)
-    h = models.IntegerField(default=0)
-    w = models.IntegerField(default=0)
-    array_index = models.IntegerField()
+    count = models.IntegerField()
 
 class TEvent(models.Model):
     started = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
-    dataset = models.ForeignKey(Dataset,null=True)
     video = models.ForeignKey(Video,null=True)
-    frame = models.ForeignKey(Frame,null=True)
+    operation = models.CharField(max_length=100,default="")
     recorded = models.DateTimeField('date created', auto_now_add=True)

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Video,Frame,Dataset,Detection,TEvent
+from .models import Video,Frame,Detection,TEvent,IndexEntries
+
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
@@ -11,8 +12,8 @@ class FrameAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Dataset)
-class DatasetAdmin(admin.ModelAdmin):
+@admin.register(IndexEntries)
+class IndexEntriesAdmin(admin.ModelAdmin):
     pass
 
 
