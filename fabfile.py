@@ -46,3 +46,12 @@ def start_server_container():
     local('python start_extractor.py &')
     local('python start_indexer.py &')
     local('python manage.py runserver 0.0.0.0:8000')
+
+
+@task
+def clean():
+    local('python manage.py flush')
+    migrate()
+    local("rm logs/*.log")
+    local("rm -rf ~/media/*")
+    local("mkdir ~/media/queries")

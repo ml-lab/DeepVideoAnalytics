@@ -5,30 +5,7 @@
 <section class="content-header" xmlns="http://www.w3.org/1999/html">
 </section>
 <section class="content">
-<div class="row">
-    <div class="col-lg-3">
-        <div class="box">
-            <div class="box-body">
-                <form role="form"  method="post" enctype="multipart/form-data" action="#" >
-                    <div class="form-group">
-                    <label class="" for="id_name">Name:</label><input id="id_name" name="name" class="form-control" type="text" required="">
-                    </div>
-                    <div class="form-group">
-                    <label class="" for="id_file">File:</label><input id="id_file" name="file" class="btn btn-file" type="file" required="">
-                    </div>
-                    {% csrf_token %}
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
-                </div>
-                </form>
-              </div>
-            </div>
-    </div>
-    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Videos</h4></div><div class="box-body text-right"><a href="/videos/">{{video_count}}</a></div></div></div>
-    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Frames</h4></div><div class="box-body  text-right">{{frame_count}}</div></div></div>
-    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Detections</h4></div><div class="box-body  text-right">{{detection_count}}</div></div></div>
-    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Queries</h4></div><div class="box-body  text-right">{{ query_count }}</div></div></div>
-</div>
+
 <div class="row large-margin">
     <div class="col-xs-1 col-sm-1 m-t" object-buttons-enabled="getSelected()" id="side_options">
         <div class="outer">
@@ -108,6 +85,47 @@
     </div>
     </div>
     <div class=" col-xs-12 col-sm-12 col-md-12 col-lg-6 m-t">
+            <div class="row">
+            <div class="col-lg-6">
+                <div class="box">
+                    <div class="box-body">
+                        <h4>Upload video</h4>
+                        <form role="form"  method="post" enctype="multipart/form-data" action="#" >
+                            <div class="form-group">
+                            <input id="id_name" name="name" class="form-control" type="text" required="" placeholder="provide a name">
+                            </div>
+                            <div class="form-group">
+                            <label class="" for="id_file">File:</label><input id="id_file" name="file" class="btn btn-file" type="file" required="">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="box">
+                    <div class="box-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Count</th>
+                                <th>View</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Videos</td><td class="text-right">{{video_count}}</td><td class="text-center"><a href="/videos/">view</a></td></tr>
+                                <tr><td>Frames</td><td class="text-right">{{frame_count}}</td><td></td></tr>
+                                <tr><td>Detections</td><td class="text-right">{{detection_count}}</td><td></td></tr>
+                                <tr><td>Queries</td><td class="text-right">{{query_count}}</td><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div ng-repeat="row in results" class="row m-t" >
             <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
               <img style="max-height:95%;max-width:98%" ng-src="/static/examples/{[ item ]}" />
@@ -115,6 +133,7 @@
         </div>
     </div>
 </div>
+
 </section>
 {% endblock %}
 

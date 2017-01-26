@@ -7,9 +7,10 @@ from torchvision import transforms
 from dvalib import resnet
 from scipy import spatial
 
-class Indexer(object):
+class Resnet50Indexer(object):
 
     def __init__(self):
+        self.name = "resnet50"
         self.net = None
         self.transform = None
         self.indexed_dirs = set()
@@ -33,31 +34,29 @@ class Indexer(object):
     def load_index(self,path):
         temp_index = []
         for dirname in os.listdir(path +"/"):
-            if dirname not in self.indexed_dirs and dirname != 'queries':
-                for fname in glob.glob("{}/{}/indexes/*.npy".format(path,dirname)):
-                    logging.info("Starting {}".format(fname))
-                    self.indexed_dirs.add(dirname)
-                    try:
-                        t = np.load(fname)
-                        if max(t.shape) > 0:
-                            temp_index.append(t)
-                        else:
-                            raise ValueError
-                    except:
-                        logging.error("Could not load {}".format(fname))
-                        pass
+            fname = "{}/{}/indexes/{}.npy".format(path,dirname,self.name)
+            if dirname not in self.indexed_dirs and dirname != 'queries' and os.path.isfile(fname):
+                logging.info("Starting {}".format(fname))
+                self.indexed_dirs.add(dirname)
+                try:
+                    t = np.load(fname)
+                    if max(t.shape) > 0:
+                        temp_index.append(t)
                     else:
-                        for i, f in enumerate(file(fname.replace(".npy", ".framelist")).readlines()):
-                            ftype,time_seconds,frame_primary_key = f.strip().split('_')
-                            self.files[self.findex] = {
-                                'type':ftype,
-                                'time_seconds':time_seconds,
-                                'frame_primary_key':frame_primary_key,
-                                'video_primary_key':dirname
-                            }
-                            # ENGINE.store_vector(index[-1][i, :], "{}".format(findex))
-                            self.findex += 1
-                        logging.info("Loaded {}".format(fname))
+                        raise ValueError
+                except:
+                    logging.error("Could not load {}".format(fname))
+                    pass
+                else:
+                    for i, f in enumerate(file(fname.replace(".npy", ".framelist")).readlines()):
+                        time_seconds = f.strip()
+                        self.files[self.findex] = {
+                            'time_seconds':time_seconds,
+                            'video_primary_key':dirname
+                        }
+                        # ENGINE.store_vector(index[-1][i, :], "{}".format(findex))
+                        self.findex += 1
+                    logging.info("Loaded {}".format(fname))
         if self.index is None:
             self.index = np.concatenate(temp_index)
             self.index = self.index.squeeze()
@@ -65,7 +64,6 @@ class Indexer(object):
         elif temp_index:
             self.index = np.concatenate([self.index, np.concatenate(temp_index).squeeze()])
             logging.info(self.index.shape)
-
 
     def nearest(self,image_path,n=12):
         query_vector = self.apply(image_path)
@@ -83,12 +81,24 @@ class Indexer(object):
             dist.append(spatial.distance.cdist(query_vector,temp))
         dist = np.hstack(dist)
         ranked = np.squeeze(dist.argsort())
-        logging.info(dist)
         logging.info("query finished")
         return [self.files[k] for i,k in enumerate(ranked[:n])]
 
+    def index_frames(self,frames,video):
+        files = []
+        features = []
+        media_dir = video.media_dir
+        for f in frames:
+            files.append("{}".format(f.time_seconds))
+            features.append(self.apply(f.local_path()))
+        feat_fname = "{}/{}/indexes/{}.npy".format(media_dir,video.primary_key,self.name)
+        files_fname = "{}/{}/indexes/{}.framelist".format(media_dir, video.primary_key,self.name)
+        with open(feat_fname, 'w') as feats:
+            np.save(feats, np.array(features))
+        with open(files_fname, 'w') as filelist:
+            filelist.write("\n".join(files))
+        return {'index_name':self.name,'count':len(features)}
 
-    def index_frames(self,frames):
-        pass
-
-INDEXER = Indexer()
+INDEXERS = {
+    'resnet50':Resnet50Indexer(),
+    }

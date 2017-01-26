@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import subprocess,sys,shutil,os,glob,time
 from django.conf import settings
 from celery import shared_task
-from .models import Video, Frame, Detection, TEvent, Query
+from .models import Video, Frame, Detection, TEvent, Query, IndexEntries
 from dvalib import entity
 import json
 
@@ -12,7 +12,12 @@ def perform_indexing(video_id):
     dv = Video.objects.get(id=video_id)
     video = entity.WVideo(dv, settings.MEDIA_ROOT)
     frames = Frame.objects.all().filter(video=dv)
-    video.index_frames(frames)
+    for index_results in video.index_frames(frames):
+        i = IndexEntries()
+        i.video = dv
+        i.count = index_results['count']
+        i.algorithm = index_results['index_name']
+        i.save()
 
 @shared_task
 def query_by_image(query_id):

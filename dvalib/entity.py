@@ -12,9 +12,11 @@ class WQuery(object):
         self.local_path = "{}/queries/{}.png".format(self.media_dir,self.primary_key)
 
     def find(self,n=10):
-        indexer.INDEXER.load_index(path=self.media_dir)
-        return indexer.INDEXER.nearest(image_path=self.local_path)
-
+        results = []
+        for index_name,index in indexer.INDEXERS.iteritems():
+            index.load_index(path=self.media_dir)
+            results.append(index.nearest(image_path=self.local_path,n=n))
+        return results
 
 class WVideo(object):
 
@@ -67,21 +69,13 @@ class WVideo(object):
             frames.append(f)
         return frames
 
-
     def index_frames(self,frames):
-        features = []
-        files = []
-        indexer.INDEXER.load()
-        for df in frames:
-            f = WFrame(video=self, time_seconds=df.time_seconds)
-            files.append("full_{}_{}".format(df.time_seconds, df.pk))
-            features.append(indexer.INDEXER.apply(f.local_path()))
-        feat_fname = "{}/{}/indexes/{}.npy".format(self.media_dir, self.primary_key, self.primary_key)
-        files_fname = "{}/{}/indexes/{}.framelist".format(self.media_dir, self.primary_key, self.primary_key)
-        with open(feat_fname, 'w') as feats:
-            np.save(feats, np.array(features))
-        with open(files_fname, 'w') as filelist:
-            filelist.write("\n".join(files))
+        results = []
+        wframes = [WFrame(video=self, time_seconds=df.time_seconds) for df in frames]
+        for index_name,index in indexer.INDEXERS.iteritems():
+            index.load()
+            results.append(index.index_frames(wframes,self))
+        return results
 
 
 class WFrame(object):
@@ -96,3 +90,4 @@ class WFrame(object):
 
     def local_path(self):
         return "{}/{}/{}/{}.jpg".format(self.video.media_dir,self.video.primary_key,'frames',self.time_seconds)
+
