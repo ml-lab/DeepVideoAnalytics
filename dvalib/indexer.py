@@ -4,7 +4,7 @@ import PIL
 from torch.autograd import Variable
 from torchvision import transforms
 from dvalib import resnet
-
+import logging
 
 class Indexer(object):
 
@@ -14,6 +14,7 @@ class Indexer(object):
 
     def load(self):
         if self.net is None:
+            logging.warning("Loading the network")
             self.net = resnet.resnet18(pretrained=True)
             self.transform = transforms.Compose([
                 transforms.Scale(224),
