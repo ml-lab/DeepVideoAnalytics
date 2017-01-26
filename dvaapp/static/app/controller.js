@@ -399,7 +399,8 @@ $scope.search_quick = function () {
         dataType: 'json',
         async: true,
         data: {
-            'image_url': canvas.toDataURL()
+            'image_url': canvas.toDataURL(),
+            'csrfmiddlewaretoken':$(csrf_token).val()
         },
         success: function (response) {
             $scope.status = "Approximate Search Completed";
@@ -429,7 +430,8 @@ $scope.search = function () {
         dataType: 'json',
         async: true,
         data: {
-            'image_url': canvas.toDataURL()
+            'image_url': canvas.toDataURL(),
+            'csrfmiddlewaretoken':$(csrf_token).val()
         },
         success: function (response) {
             $scope.status = "Exact Search Completed";

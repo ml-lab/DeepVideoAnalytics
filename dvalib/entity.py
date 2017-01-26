@@ -3,6 +3,17 @@ import subprocess as sp
 import indexer
 import numpy as np
 
+class WQuery(object):
+
+    def __init__(self,dquery,media_dir):
+        self.media_dir = media_dir
+        self.dquery = dquery
+        self.primary_key = self.dquery.pk
+        self.local_path = "{}/queries/{}.png".format(self.media_dir,self.primary_key)
+
+    def find(self,n=10):
+        indexer.INDEXER.load_index(path=self.media_dir)
+        return indexer.INDEXER.nearest(image_path=self.local_path)
 
 
 class WVideo(object):

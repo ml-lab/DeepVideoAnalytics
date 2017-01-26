@@ -2,16 +2,27 @@ from __future__ import absolute_import
 import subprocess,sys,shutil,os,glob,time
 from django.conf import settings
 from celery import shared_task
-from .models import Video, Frame, Detection, TEvent
-import dvalib
+from .models import Video, Frame, Detection, TEvent, Query
+from dvalib import entity
+import json
 
 
 @shared_task
 def perform_indexing(video_id):
     dv = Video.objects.get(id=video_id)
-    video = dvalib.entity.WVideo(dv, settings.MEDIA_ROOT)
+    video = entity.WVideo(dv, settings.MEDIA_ROOT)
     frames = Frame.objects.all().filter(video=dv)
     video.index_frames(frames)
+
+@shared_task
+def query_by_image(query_id):
+    dq = Query.objects.get(id=query_id)
+    Q = entity.WQuery(dquery=dq, media_dir=settings.MEDIA_ROOT)
+    results = Q.find()
+    dq.results = True
+    dq.results_metadata = json.dumps(results)
+    dq.save()
+    return results
 
 
 @shared_task
@@ -21,7 +32,7 @@ def extract_frames(video_id):
     start.started = True
     start.save()
     dv = Video.objects.get(id=video_id)
-    v = dvalib.entity.WVideo(dvideo=dv, media_dir=settings.MEDIA_ROOT)
+    v = entity.WVideo(dvideo=dv, media_dir=settings.MEDIA_ROOT)
     time.sleep(3) # otherwise ffprobe randomly fails
     v.get_metadata()
     dv.metadata = v.metadata

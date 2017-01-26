@@ -24,10 +24,10 @@
               </div>
             </div>
     </div>
-    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Videos</h4></div><div class="box-body text-right"><a href="/videos/">{{video_count}}</a></div></div></div>
-    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Frames</h4></div><div class="box-body  text-right">{{frame_count}}</div></div></div>
-    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Detections</h4></div><div class="box-body  text-right">{{detection_count}}</div></div></div>
-    <div class="col-lg-2"><div class="box"><div class="box-header with-border"><h4>Indexed</h4></div><div class="box-body  text-right">0</div></div></div>
+    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Videos</h4></div><div class="box-body text-right"><a href="/videos/">{{video_count}}</a></div></div></div>
+    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Frames</h4></div><div class="box-body  text-right">{{frame_count}}</div></div></div>
+    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Detections</h4></div><div class="box-body  text-right">{{detection_count}}</div></div></div>
+    <div class="col-lg-1 col-md-2"><div class="box"><div class="box-header with-border"><h4>Queries</h4></div><div class="box-body  text-right">{{ query_count }}</div></div></div>
 </div>
 <div class="row large-margin">
     <div class="col-xs-1 col-sm-1 m-t" object-buttons-enabled="getSelected()" id="side_options">
@@ -122,6 +122,7 @@
 {% block page_js %}
     <script>
         var payload = "{{ payload }}";
+        var csrf_token = "{% csrf_token %}";
     </script>
     <script src="/static/plugins/jquery.mousewheel.min.js"></script>
     <script src="/static/plugins/underscore-min.js"></script>

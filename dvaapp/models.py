@@ -32,6 +32,12 @@ class Frame(models.Model):
     name = models.CharField(max_length=200,null=True)
 
 
+class Query(models.Model):
+    created = models.DateTimeField('date created', auto_now_add=True)
+    results = models.BooleanField(default=False)
+    task_id = models.CharField(max_length=100,default="")
+    results_metadata = models.TextField(default="")
+
 class Detection(models.Model):
     video = models.ForeignKey(Video,null=True)
     dataset = models.ForeignKey(Dataset,null=True)

@@ -20,7 +20,7 @@ class Indexer(object):
             logging.warning("Loading the network")
             self.net = resnet.resnet18(pretrained=True)
             self.transform = transforms.Compose([
-                transforms.Scale(224),
+                transforms.CenterCrop(224),
                 transforms.ToTensor(),
                 transforms.Normalize(mean = [ 0.485, 0.456, 0.406 ],std = [ 0.229, 0.224, 0.225 ]),
                 ])
@@ -36,6 +36,7 @@ class Indexer(object):
             if dirname not in self.indexed_dirs and dirname != 'queries':
                 for fname in glob.glob("{}/{}/indexes/*.npy".format(path,dirname)):
                     logging.info("Starting {}".format(fname))
+                    self.indexed_dirs.add(dirname)
                     try:
                         t = np.load(fname)
                         if max(t.shape) > 0:
@@ -60,16 +61,16 @@ class Indexer(object):
         if self.index is None:
             self.index = np.concatenate(temp_index)
             self.index = self.index.squeeze()
-        else:
+            logging.info(self.index.shape)
+        elif temp_index:
             self.index = np.concatenate([self.index, np.concatenate(temp_index).squeeze()])
-        print self.index.shape
+            logging.info(self.index.shape)
+
 
     def nearest(self,image_path,n=12):
         query_vector = self.apply(image_path)
         temp = []
         dist = []
-        print self.index.shape
-        print query_vector.shape
         logging.info("started query")
         for k in xrange(self.index.shape[0]):
             temp.append(self.index[k])
@@ -82,6 +83,7 @@ class Indexer(object):
             dist.append(spatial.distance.cdist(query_vector,temp))
         dist = np.hstack(dist)
         ranked = np.squeeze(dist.argsort())
+        logging.info(dist)
         logging.info("query finished")
         return [self.files[k] for i,k in enumerate(ranked[:n])]
 

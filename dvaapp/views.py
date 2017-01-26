@@ -2,13 +2,31 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 import requests
-import os
+import os,base64
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,DetailView
 from django.utils.decorators import method_decorator
 from .forms import UploadFileForm
-from .models import Video,Frame,Detection
-from .tasks import extract_frames
+from .models import Video,Frame,Detection,Query
+from .tasks import extract_frames,query_by_image
+
+
+def search(request):
+    if request.method == 'POST':
+        query = Query()
+        query.save()
+        primary_key = query.pk
+        image_url = request.POST.get('image_url')
+        image_data = base64.decodestring(image_url[22:])
+        query_path = "{}/queries/{}.png".format(settings.MEDIA_ROOT,primary_key)
+        with open(query_path,'w') as fh:
+            fh.write(image_data)
+        result = query_by_image.apply_async(args=[primary_key],queue=settings.Q_INDEXER)
+        query.task_id = result.task_id
+        query.save()
+        return JsonResponse(data={'task_id':result.task_id,'primary_key':primary_key})
+
+
 
 def index(request):
     if request.method == 'POST':
