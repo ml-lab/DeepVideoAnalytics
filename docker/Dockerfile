@@ -37,7 +37,8 @@ RUN apt-get update && apt-get install -y libpq-dev && \
 	apt-get clean && \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
-
+RUN pip install https://s3.amazonaws.com/pytorch/whl/cu75/torch-0.1.6.post22-cp27-none-linux_x86_64.whl
+RUN pip install torchvision
 RUN pip install --upgrade pip \
                           fabric \
                           django \

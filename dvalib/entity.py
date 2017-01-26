@@ -1,5 +1,8 @@
 import shlex,json,os
 import subprocess as sp
+import indexer
+import numpy as np
+
 
 
 class WVideo(object):
@@ -54,6 +57,22 @@ class WVideo(object):
         return frames
 
 
+    def index_frames(self,frames):
+        features = []
+        files = []
+        indexer.INDEXER.load()
+        for df in frames:
+            f = WFrame(video=self, time_seconds=df.time_seconds)
+            files.append("full_{}_{}".format(df.time_seconds, df.pk))
+            features.append(indexer.INDEXER.apply(f.local_path()))
+        feat_fname = "{}/{}/indexes/{}.npy".format(self.media_dir, self.primary_key, self.primary_key)
+        files_fname = "{}/{}/indexes/{}.framelist".format(self.media_dir, self.primary_key, self.primary_key)
+        with open(feat_fname, 'w') as feats:
+            np.save(feats, np.array(features))
+        with open(files_fname, 'w') as filelist:
+            filelist.write("\n".join(files))
+
+
 class WFrame(object):
 
     def __init__(self,time_seconds=None,video=None):
@@ -65,4 +84,4 @@ class WFrame(object):
             self.video = None
 
     def local_path(self):
-        return "{}/{}/{}/{}.jpg".format(self.video.media_dir,self.video.primary_kcy,'frames',self.time_seconds)
+        return "{}/{}/{}/{}.jpg".format(self.video.media_dir,self.video.primary_key,'frames',self.time_seconds)

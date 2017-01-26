@@ -12,6 +12,7 @@
        - RABBITMQ_DEFAULT_PASS=localpass
    web:
      build: .
+     image: aub3dva:latest
      command: bash -c "git pull && fab start_server_container"
      ports:
        - "8000:8000"

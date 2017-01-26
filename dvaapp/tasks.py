@@ -3,50 +3,19 @@ import subprocess,sys,shutil,os,glob,time
 from django.conf import settings
 from celery import shared_task
 from .models import Video, Frame, Detection, TEvent
+import dvalib
 
 
-# @shared_task
-# def perform_detection_video(video_id):
-#     from . import wmodels
-#     frame_paths = []
-#     frame_dict = {}
-#     try:
-#         os.mkdir(TEMP_DIR)
-#     except:
-#         pass
-#     dv = Video.objects.get(id=video_id)
-#     frames = Frame.objects.all().filter(video=dv)
-#     for df in frames:
-#         f = wmodels.WFrame(df,temp_dir=TEMP_DIR)
-#         f.download()
-#         frame_paths.append(f.local_path)
-#         frame_dict[f.key.split('/')[-1].split('.')[0]] = df
-#     return yolo_detect(frame_paths,frame_dict,dv)
+@shared_task
+def perform_indexing(video_id):
+    dv = Video.objects.get(id=video_id)
+    video = dvalib.entity.WVideo(dv, settings.MEDIA_ROOT)
+    frames = Frame.objects.all().filter(video=dv)
+    video.index_frames(frames)
 
-
-# @shared_task
-# def perform_indexing(video_id):
-#     from dvalib import entity
-#     from dvalib import entity
-#
-#     frame_paths = []
-#     frame_dict = {}
-#     try:
-#         os.mkdir(TEMP_DIR)
-#     except:
-#         pass
-#     dv = Video.objects.get(id=video_id)
-#     frames = Frame.objects.all().filter(video=dv)
-#     for df in frames:
-#         f = wmodels.WFrame(df,temp_dir=TEMP_DIR)
-#         f.download()
-#         frame_paths.append(f.local_path)
-#         frame_dict[f.local_path] = df.key
-#     return inception_index(frame_paths,frame_dict,dv)
 
 @shared_task
 def extract_frames(video_id):
-    import dvalib
     start = TEvent()
     start.video_id = video_id
     start.started = True
@@ -71,9 +40,26 @@ def extract_frames(video_id):
     finished.completed = True
     finished.video_id = video_id
     finished.save()
+    perform_indexing.apply_async(args=[video_id],queue=settings.Q_INDEXER)
     return 0
 
-
+# @shared_task
+# def perform_detection_video(video_id):
+#     from . import wmodels
+#     frame_paths = []
+#     frame_dict = {}
+#     try:
+#         os.mkdir(TEMP_DIR)
+#     except:
+#         pass
+#     dv = Video.objects.get(id=video_id)
+#     frames = Frame.objects.all().filter(video=dv)
+#     for df in frames:
+#         f = wmodels.WFrame(df,temp_dir=TEMP_DIR)
+#         f.download()
+#         frame_paths.append(f.local_path)
+#         frame_dict[f.key.split('/')[-1].split('.')[0]] = df
+#     return yolo_detect(frame_paths,frame_dict,dv)
 # def yolo_detect(frame_paths,frame_dict,source_video=None):
 #     darknet_dir = '/Users/aub3/Dropbox/Projects/DCA/darknet' if sys.platform == 'darwin' else '/home/ec2-user//darknet'
 #     with open('{}/data/images.txt'.format(darknet_dir),'w') as out:
@@ -101,23 +87,4 @@ def extract_frames(video_id):
 #                     dd.h = bottom_y - top_y
 #                     dd.save()
 #     return returncode
-#
-#
-# @shared_task
-# def inception_index(frame_list,frame_dict,dv):
-#     import numpy as np
-#     from . import inception
-#     indexer = inception.Indexer()
-#     inception.load_network()
-#     with inception.tf.Session() as sess:
-#         for image_data in inception.get_batch(frame_list, batch_size=20):
-#             if len(image_data):
-#                 start = time.time()
-#                 features, files = inception.extract_features(image_data, sess)
-#                 start = time.time()
-#     feat_fname = "{}/{}.feats_pool3.npy".format(TEMP_DIR,dv.id)
-#     files_fname = "{}/{}.files".format(TEMP_DIR,dv.id)
-#     with open(feat_fname,'w') as feats:
-#         np.save(feats,np.array(features))
-#     with open(files_fname,'w') as filelist:
-#         filelist.write("\n".join(files))
+

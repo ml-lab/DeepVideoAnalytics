@@ -46,7 +46,8 @@ def server():
 def start_server_container():
     local('sleep 60')
     migrate()
-    local('python start_worker_extractor.py &')
+    local('python start_extractor.py &')
+    local('python start_indexer.py &')
     local('python manage.py runserver 0.0.0.0:8000')
 
 
