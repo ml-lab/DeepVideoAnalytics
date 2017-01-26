@@ -33,7 +33,7 @@ class Indexer(object):
     def load_index(self,path):
         temp_index = []
         for dirname in os.listdir(path +"/"):
-            if dirname not in self.indexed_dirs:
+            if dirname not in self.indexed_dirs and dirname != 'queries':
                 for fname in glob.glob("{}/{}/indexes/*.npy".format(path,dirname)):
                     logging.info("Starting {}".format(fname))
                     try:
@@ -47,22 +47,27 @@ class Indexer(object):
                         pass
                     else:
                         for i, f in enumerate(file(fname.replace(".npy", ".framelist")).readlines()):
-                            self.files[self.findex] = f.strip()
+                            ftype,time_seconds,frame_primary_key = f.strip().split('_')
+                            self.files[self.findex] = {
+                                'type':ftype,
+                                'time_seconds':time_seconds,
+                                'frame_primary_key':frame_primary_key,
+                                'video_primary_key':dirname
+                            }
                             # ENGINE.store_vector(index[-1][i, :], "{}".format(findex))
                             self.findex += 1
                         logging.info("Loaded {}".format(fname))
         if self.index is None:
             self.index = np.concatenate(temp_index)
+            self.index = self.index.squeeze()
         else:
-            self.index = np.concatenate([self.index, np.concatenate(temp_index)])
+            self.index = np.concatenate([self.index, np.concatenate(temp_index).squeeze()])
         print self.index.shape
 
     def nearest(self,image_path,n=12):
         query_vector = self.apply(image_path)
-        query_vector= query_vector[np.newaxis,:]
         temp = []
         dist = []
-
         print self.index.shape
         print query_vector.shape
         logging.info("started query")

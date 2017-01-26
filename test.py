@@ -8,4 +8,4 @@ if __name__ == '__main__':
     # tasks.perform_indexing(7)
     indexer.INDEXER.load_index("/Users/aub3/media/")
     indexer.INDEXER.load_index("/Users/aub3/media/")
-    indexer.INDEXER.nearest("/Users/aub3/media/7/frames/0.jpg")
+    print indexer.INDEXER.nearest("/Users/aub3/media/7/frames/0.jpg")
