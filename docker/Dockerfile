@@ -63,4 +63,5 @@ RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /bin/youtube-dl
 RUN chmod a+rx /bin/youtube-dl
 RUN youtube-dl -U
 RUN git clone https://github.com/akshayubhat/DeepVideoAnalytics /root/DVA
+VOLUME ["/root/DVA/dva/media"]
 WORKDIR "/root/DVA"

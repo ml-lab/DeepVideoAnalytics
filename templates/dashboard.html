@@ -128,7 +128,8 @@
 
         <div ng-repeat="row in results" class="row m-t" >
             <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
-              <img style="max-height:95%;max-width:98%" ng-src="/static/examples/{[ item ]}" />
+              <img style="max-height:95%;max-width:98%" ng-src="{[ item.url ]}" />
+                <p> {[ item.algo ]}</p>
             </div>
         </div>
     </div>

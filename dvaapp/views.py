@@ -24,7 +24,14 @@ def search(request):
         result = query_by_image.apply_async(args=[primary_key],queue=settings.Q_INDEXER)
         query.task_id = result.task_id
         query.save()
-        return JsonResponse(data={'task_id':result.task_id,'primary_key':primary_key})
+        results = []
+        entries = result.get()
+        if entries:
+            for algo,rlist in entries.iteritems():
+                for r in rlist:
+                    r['url'] = '/media/{}/frames/{}.jpg'.format(r['video_primary_key'],r['time_seconds'])
+                    results.append(r)
+        return JsonResponse(data={'task_id':result.task_id,'primary_key':primary_key,'results':results})
 
 
 

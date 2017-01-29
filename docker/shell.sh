@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker exec -u="root" -it docker_web_1 bash
+docker exec -u="root" -it dva-server bash

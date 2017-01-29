@@ -435,6 +435,7 @@ $scope.search = function () {
         },
         success: function (response) {
             $scope.status = "Exact Search Completed";
+            console.log(response);
             $scope.results = chunk(response.results, 4);
             $scope.$$phase || $scope.$digest();
 

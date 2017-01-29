@@ -82,7 +82,12 @@ class Resnet50Indexer(object):
         dist = np.hstack(dist)
         ranked = np.squeeze(dist.argsort())
         logging.info("query finished")
-        return [self.files[k] for i,k in enumerate(ranked[:n])]
+        results = []
+        for i, k in enumerate(ranked[:n]):
+            temp = {'i':i,'algo':self.name,'dist':dist[0,k]}
+            temp.update(self.files[k])
+            results.append(temp)
+        return results
 
     def index_frames(self,frames,video):
         files = []

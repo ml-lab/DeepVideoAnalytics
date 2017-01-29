@@ -1,21 +1,35 @@
- version: '2'
+ version: '3'
  services:
    db:
      image: postgres
+     container_name: dva-pg
+     volumes:
+      - dvapgdata:/var/lib/postgresql/data
 #   environment:
 #     - POSTGRES_USER=dvauser
 #     - POSTGRES_PASSWORD=localpass
    rabbit:
      image: rabbitmq
+     container_name: dva-rmq
      environment:
        - RABBITMQ_DEFAULT_USER=dvauser
        - RABBITMQ_DEFAULT_PASS=localpass
-   web:
+     volumes:
+       - dvarabbit:/var/lib/rabbitmq
+   dva:
      build: .
      image: aub3dva:latest
+     container_name: dva-server
      command: bash -c "git pull && fab start_server_container"
      ports:
        - "8000:8000"
      depends_on:
        - db
        - rabbit
+     volumes:
+       - dvadata:/root/DVA/dva/media
+ volumes:
+  dvapgdata:
+  dvadata:
+  dvarabbit:
+

@@ -12,10 +12,11 @@ class WQuery(object):
         self.local_path = "{}/queries/{}.png".format(self.media_dir,self.primary_key)
 
     def find(self,n=10):
-        results = []
+        results = {}
         for index_name,index in indexer.INDEXERS.iteritems():
+            results[index_name] = []
             index.load_index(path=self.media_dir)
-            results.append(index.nearest(image_path=self.local_path,n=n))
+            results[index_name]= index.nearest(image_path=self.local_path,n=n)
         return results
 
 class WVideo(object):
