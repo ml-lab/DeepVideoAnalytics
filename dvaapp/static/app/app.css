@@ -57,9 +57,16 @@ canvas
     width: 10px;
 }
 
+
 .uploadmenu{
     width: 500px;
 }
+@media (min-width: 1370px) {
+    .uploadmenu{
+    width: 700px;
+}
+}
+
 
 input[type=range] {
     display: inline;
