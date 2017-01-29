@@ -53,3 +53,11 @@ class TEvent(models.Model):
     video = models.ForeignKey(Video,null=True)
     operation = models.CharField(max_length=100,default="")
     recorded = models.DateTimeField('date created', auto_now_add=True)
+
+
+class QueryResults(models.Model):
+    query = models.ForeignKey(Query)
+    video = models.ForeignKey(Video)
+    frame = models.ForeignKey(Frame)
+    algorithm = models.CharField(max_length=100)
+    distance = models.FloatField(default=0.0)

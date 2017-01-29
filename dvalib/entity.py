@@ -72,7 +72,7 @@ class WVideo(object):
 
     def index_frames(self,frames):
         results = []
-        wframes = [WFrame(video=self, time_seconds=df.time_seconds) for df in frames]
+        wframes = [WFrame(video=self, time_seconds=df.time_seconds,primary_key=df.pk) for df in frames]
         for index_name,index in indexer.INDEXERS.iteritems():
             index.load()
             results.append(index.index_frames(wframes,self))
@@ -81,13 +81,15 @@ class WVideo(object):
 
 class WFrame(object):
 
-    def __init__(self,time_seconds=None,video=None):
+    def __init__(self,time_seconds=None,video=None,primary_key=None):
         if video:
             self.time_seconds = time_seconds
             self.video = video
+            self.primary_key = primary_key
         else:
             self.time_seconds = None
             self.video = None
+            self.primary_key = None
 
     def local_path(self):
         return "{}/{}/{}/{}.jpg".format(self.video.media_dir,self.video.primary_key,'frames',self.time_seconds)

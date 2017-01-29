@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import subprocess,sys,shutil,os,glob,time
 from django.conf import settings
 from celery import shared_task
-from .models import Video, Frame, Detection, TEvent, Query, IndexEntries
+from .models import Video, Frame, Detection, TEvent, Query, IndexEntries,QueryResults
 from dvalib import entity
 import json
 
@@ -25,6 +25,15 @@ def query_by_image(query_id):
     Q = entity.WQuery(dquery=dq, media_dir=settings.MEDIA_ROOT)
     results = Q.find()
     dq.results = True
+    for algo,rlist in results.iteritems():
+        for r in rlist:
+            qr = QueryResults()
+            qr.query = dq
+            qr.frame_id = r['frame_primary_key']
+            qr.video_id = r['video_primary_key']
+            qr.algorithm = algo
+            qr.distance = r['dist']
+        qr.save()
     dq.results_metadata = json.dumps(results)
     dq.save()
     return results
