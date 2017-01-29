@@ -14,44 +14,6 @@
         <button type="button" class="btn btn-danger  btn-move"  id="clear" ng-click="confirmClear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clean editor</button>
         <button type="button" class="btn btn-warning  btn-move"  id="clear_mask" ng-click="confirmClearMasks()"><i class="fa fa-trash"></i>&nbsp;Clear masks</button>
         <button type="button" class="btn btn-info  btn-move"  id="reset_zoom" ng-click="resetZoom()"><i class="fa fa-refresh"></i>&nbsp;Reset Zoom</button>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  m-t input">
-        <div class="operations">
-            <form id="image-form"  onsubmit="return false;">
-                <input type='file'  id='imgfile' style="display:none"/>
-                <a type='button' class="btn btn-info" id='btnLoad' ng-click='load_image();'><i class="fa fa-image"></i>&nbsp;&nbsp;Add image</a>
-            </form>
-            <button  style="display:None" id="drawing-mode_f"
-              ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)"
-              ng-class="{'btn-inverse': getFreeDrawingMode(1)}" class="btn bg-green ">
-              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Highlight </button>
-            <button id="drawing-mode_b"
-              ng-click="setFreeDrawingMode(!getFreeDrawingMode(2),2)"
-              ng-class="{'btn-inverse': getFreeDrawingMode(2)}" class="btn btn-warning ">
-              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Exclude </button>
-            <div ng-show="getFreeDrawingMode(1)" class="drawing-mode">
-                <button id="drawing-mode_x" ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)" class="btn bg-red  stop_btn"> <i class="fa fa-close"></i>&nbsp;&nbsp;Stop Drawing!</button>
-            </div>
-
-        </div>
-        <div id="canvas-wrapper">
-            <canvas id="canvas"  width="500" height="500"></canvas>
-        </div>
-        <div class="operation_search">
-            <button href="" class="btn btn-warning" id="search_quick" ng-click="search_quick()"><i class="fa fa-search"></i>&nbsp;&nbsp;Approximate Seach by Image</button>
-            <button href="" class="btn btn-success" id="segment" ng-click="search()"><i class="fa fa-search"></i>&nbsp;&nbsp;Seach by Image</button>
-        </div>
-        <div id="status" ng-model="status" ng-show="checkStatus()" class="alert alert-info  alert-dismissable"><h4 class="h4status">{[ status ]}</h4>
-                <button type="button" class="close" ng-click="disableStatus()" aria-hidden="true">x</button>
-        </div>
-    </div>
-    <div class=" col-xs-1 col-sm-1 col-md-1 col-lg-1 m-t" object-buttons-enabled="getSelected()" id="side_options_2" style="padding-left:0px;">
-        <div class="outer">
-        <div class="middle">
-        <div class="inner">
         <div ng-show="getFreeDrawingMode(2)" class="drawing-mode">
             <button id="drawing-mode_x_2" ng-click="setFreeDrawingMode(!getFreeDrawingMode(2),2)" class="btn btn-warning btn-move stop_btn"> <i class="fa fa-close"></i>&nbsp;&nbsp;Stop Drawing!</button>
         </div>
@@ -84,7 +46,31 @@
     </div>
     </div>
     </div>
-    <div class=" col-xs-12 col-sm-12 col-md-12 col-lg-6 m-t">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  m-t input">
+        <div class="operations">
+            <form id="image-form"  onsubmit="return false;">
+                <input type='file'  id='imgfile' style="display:none"/>
+                <a type='button' class="btn btn-info" id='btnLoad' ng-click='load_image();'><i class="fa fa-image"></i>&nbsp;&nbsp;Add image</a>
+            </form>
+            <button  style="display:None" id="drawing-mode_f"
+              ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)"
+              ng-class="{'btn-inverse': getFreeDrawingMode(1)}" class="btn bg-green ">
+              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Highlight </button>
+            <button id="drawing-mode_b"
+              ng-click="setFreeDrawingMode(!getFreeDrawingMode(2),2)"
+              ng-class="{'btn-inverse': getFreeDrawingMode(2)}" class="btn btn-warning ">
+              <i class="fa fa-pencil"></i>&nbsp;&nbsp;Exclude </button>
+            <div ng-show="getFreeDrawingMode(1)" class="drawing-mode">
+                <button id="drawing-mode_x" ng-click="setFreeDrawingMode(!getFreeDrawingMode(1),1)" class="btn bg-red  stop_btn"> <i class="fa fa-close"></i>&nbsp;&nbsp;Stop Drawing!</button>
+            </div>
+            <button href="" class="btn btn-warning" id="search_quick" ng-click="search_quick()"><i class="fa fa-search"></i>&nbsp;&nbsp;Approximate Search</button>
+            <button href="" class="btn btn-success" id="segment" ng-click="search()"><i class="fa fa-search"></i>&nbsp;&nbsp;Exact Search</button>
+        </div>
+        <div id="canvas-wrapper">
+            <canvas id="canvas"  width="500" height="500"></canvas>
+        </div>
+    </div>
+    <div class=" col-xs-12 col-sm-12 col-md-6 col-lg-4 m-t uploadmenu">
             <div class="row">
             <div class="col-lg-6">
                 <div class="box">
@@ -125,16 +111,17 @@
                 </div>
             </div>
         </div>
-
-        <div ng-repeat="row in results" class="row m-t" >
-            <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
-              <img style="max-height:95%;max-width:98%" ng-src="{[ item.url ]}" />
-                <p> {[ item.algo ]}</p>
-            </div>
+        <div id="status" ng-model="status" ng-show="checkStatus()" class="alert alert-info  alert-dismissable"><h4 class="h4status">{[ status ]}</h4>
+            <button type="button" class="close" ng-click="disableStatus()" aria-hidden="true">x</button>
         </div>
     </div>
 </div>
-
+<div ng-repeat="row in results" class="row" >
+    <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
+      <img style="max-height:95%;max-width:98%" ng-src="{[ item.url ]}" />
+      <p> {[ item.algo ]}</p> <a href="/video/{[ item.video_primary_key ]}"> video </a>
+    </div>
+</div>
 </section>
 {% endblock %}
 
