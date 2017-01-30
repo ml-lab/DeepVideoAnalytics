@@ -16,8 +16,6 @@
                 <thead>
                 <tr>
                     <th class="text-center">name</th>
-                    <th class="text-center">key</th>
-                    <th class="text-center">bucket </th>
                     <th class="text-center">duration</th>
                     <th class="text-center">height</th>
                     <th class="text-center">width</th>
@@ -29,8 +27,6 @@
                 {% for v in video_list %}
                     <tr>
                         <td>{{ v.name }} </td>
-                        <td>{{ v.key }} </td>
-                        <td>{{ v.bucket }} </td>
                         <td class="text-right">{{ v.length_in_seconds }} </td>
                         <td class="text-right">{{ v.height }} </td>
                         <td class="text-right">{{ v.width }} </td>

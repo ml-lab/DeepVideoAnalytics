@@ -1,7 +1,8 @@
-import shlex,json,os
+import shlex,json,os,zipfile,glob,logging
 import subprocess as sp
 import indexer
 import numpy as np
+
 
 class WQuery(object):
 
@@ -23,10 +24,7 @@ class WVideo(object):
 
     def __init__(self,dvideo,media_dir):
         self.dvideo = dvideo
-        self.key = self.dvideo.key
         self.primary_key = self.dvideo.pk
-        self.bucket = self.dvideo.bucket
-        self.file_name = self.key.split('/')[-1]
         self.media_dir = media_dir
         self.local_path = "{}/{}/video/{}.mp4".format(self.media_dir,self.primary_key,self.primary_key)
         self.duration = None
@@ -49,25 +47,38 @@ class WVideo(object):
 
     def extract_frames(self):
         frames = []
-        frame_seconds = set()
-        for i in range(int(self.duration)):
-            if i % 10 == 0:
-                frame_seconds.add(i)
-                frame_seconds.add(i+1)
-        output_dir = "{}/{}/{}/".format(self.media_dir,self.primary_key,'frames')
-        for s in frame_seconds:
-            fname = "{}.jpg".format(s)
-            command = 'ffmpeg -accurate_seek -ss {} -i {} -y -frames:v 1 -vf scale=600:-1 {}/{}'.format(s,
-                                                                                                     self.local_path,
-                                                                                                     output_dir,fname)
-            extract = sp.Popen(shlex.split(command))
-            extract.wait()
-            if extract.returncode != 0:
-                raise ValueError
-            f = WFrame(time_seconds=s,video=self)
-            if extract.returncode != 0:
-                raise ValueError
-            frames.append(f)
+        if not self.dvideo.dataset:
+            frame_seconds = set()
+            for i in range(int(self.duration)):
+                if i % 10 == 0:
+                    frame_seconds.add(i)
+                    frame_seconds.add(i+1)
+            output_dir = "{}/{}/{}/".format(self.media_dir,self.primary_key,'frames')
+            for s in frame_seconds:
+                fname = "{}.jpg".format(s)
+                command = 'ffmpeg -accurate_seek -ss {} -i {} -y -frames:v 1 -vf scale=600:-1 {}/{}'.format(s,
+                                                                                                         self.local_path,
+                                                                                                         output_dir,fname)
+                extract = sp.Popen(shlex.split(command))
+                extract.wait()
+                if extract.returncode != 0:
+                    raise ValueError
+                f = WFrame(time_seconds=s,video=self)
+                if extract.returncode != 0:
+                    raise ValueError
+                frames.append(f)
+        else:
+            zipf = zipfile.ZipFile("{}/{}/video/{}.zip".format(self.media_dir, self.primary_key, self.primary_key), 'r')
+            zipf.extractall("{}/{}/frames/".format(self.media_dir, self.primary_key))
+            zipf.close()
+            for i, fname in enumerate(glob.glob("{}/{}/frames/*".format(self.media_dir, self.primary_key))):
+                if fname.endswith('jpg') or fname.endswith('jpeg'):
+                    dst = "{}/{}/frames/{}.jpg".format(self.media_dir, self.primary_key,i)
+                    os.rename(fname,dst)
+                    f = WFrame(time_seconds=i, video=self)
+                    frames.append(f)
+                else:
+                    logging.warning("skipping {} not a jpeg file".format(fname))
         return frames
 
     def index_frames(self,frames):

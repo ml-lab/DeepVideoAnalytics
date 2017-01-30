@@ -7,10 +7,10 @@ from torchvision import transforms
 from dvalib import resnet
 from scipy import spatial
 
-class Resnet50Indexer(object):
+class BaseIndexer(object):
 
     def __init__(self):
-        self.name = "resnet50"
+        self.name = "base"
         self.net = None
         self.transform = None
         self.indexed_dirs = set()
@@ -19,9 +19,9 @@ class Resnet50Indexer(object):
     def load(self):
         if self.net is None:
             logging.warning("Loading the network")
-            self.net = resnet.resnet50(pretrained=True)
+            self.net = resnet.resnet101(pretrained=True)
             self.transform = transforms.Compose([
-                transforms.CenterCrop(224),
+                transforms.Scale(224),
                 transforms.ToTensor(),
                 transforms.Normalize(mean = [ 0.485, 0.456, 0.406 ],std = [ 0.229, 0.224, 0.225 ]),
                 ])
@@ -105,6 +105,48 @@ class Resnet50Indexer(object):
             filelist.write("\n".join(files))
         return {'index_name':self.name,'count':len(features)}
 
+
+class Resnet101Indexer(BaseIndexer):
+
+    def __init__(self):
+        self.name = "resnet101"
+        self.net = None
+        self.transform = None
+        self.indexed_dirs = set()
+        self.index, self.files, self.findex = None, {}, 0
+
+    def load(self):
+        if self.net is None:
+            logging.warning("Loading the network")
+            self.net = resnet.resnet101(pretrained=True)
+            self.transform = transforms.Compose([
+                transforms.Scale(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            ])
+
+
+class Resnet18Indexer(BaseIndexer):
+
+    def __init__(self):
+        self.name = "resnet18"
+        self.net = None
+        self.transform = None
+        self.indexed_dirs = set()
+        self.index, self.files, self.findex = None, {}, 0
+
+    def load(self):
+        if self.net is None:
+            logging.warning("Loading the network")
+            self.net = resnet.resnet18(pretrained=True)
+            self.transform = transforms.Compose([
+                transforms.Scale(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            ])
+
+
 INDEXERS = {
-    'resnet50':Resnet50Indexer(),
-    }
+    'resnet101':Resnet101Indexer(),
+    'resnet18':Resnet18Indexer()
+}

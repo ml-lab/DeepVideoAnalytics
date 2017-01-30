@@ -63,12 +63,19 @@ def handle_uploaded_file(f,name):
     os.mkdir('{}/{}/detections/'.format(settings.MEDIA_ROOT, video.pk))
     os.mkdir('{}/{}/audio/'.format(settings.MEDIA_ROOT, video.pk))
     primary_key = video.pk
-    with open('{}/{}/video/{}.mp4'.format(settings.MEDIA_ROOT,video.pk,video.pk), 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-    video.uploaded = True
-    video.save()
-    extract_frames.apply_async(args=[primary_key],queue=settings.Q_EXTRACTOR)
+    filename = f.name
+    if filename.endswith('.mp4') or filename.endswith('.flv') or filename.endswith('.zip'):
+        with open('{}/{}/video/{}.{}'.format(settings.MEDIA_ROOT,video.pk,video.pk,filename.split('.')[-1]), 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+        video.uploaded = True
+        if filename.endswith('.zip'):
+            video.dataset = True
+        video.save()
+
+        extract_frames.apply_async(args=[primary_key],queue=settings.Q_EXTRACTOR)
+    else:
+        raise ValueError,"Extension {} not allowed".format(filename.split('.')[-1])
 
 class VideoList(ListView):
     model = Video

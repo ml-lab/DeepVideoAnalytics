@@ -5,6 +5,8 @@ from celery import shared_task
 from .models import Video, Frame, Detection, TEvent, Query, IndexEntries,QueryResults
 from dvalib import entity
 import json
+import zipfile
+
 
 
 @shared_task
@@ -48,12 +50,13 @@ def extract_frames(video_id):
     dv = Video.objects.get(id=video_id)
     v = entity.WVideo(dvideo=dv, media_dir=settings.MEDIA_ROOT)
     time.sleep(3) # otherwise ffprobe randomly fails
-    v.get_metadata()
-    dv.metadata = v.metadata
-    dv.length_in_seconds = v.duration
-    dv.height = v.height
-    dv.width = v.width
-    dv.save()
+    if not dv.dataset:
+        v.get_metadata()
+        dv.metadata = v.metadata
+        dv.length_in_seconds = v.duration
+        dv.height = v.height
+        dv.width = v.width
+        dv.save()
     frames = v.extract_frames()
     for f in frames:
         df = Frame()
