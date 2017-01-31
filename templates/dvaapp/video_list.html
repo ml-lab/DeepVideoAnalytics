@@ -9,14 +9,16 @@
     <div class="col-lg-10 col-lg-offset-1 col-md-12">
         <div class="box">
             <div class="box-header with-border">
-            <h2>List of videos</h2>
+            <h2>List of videos & datasets</h2>
             </div>
             <div class="box-body">
                 <table class="table dataTables">
                 <thead>
                 <tr>
+                    <th class="text-center">type</th>
                     <th class="text-center">name</th>
                     <th class="text-center">duration</th>
+                    <th class="text-center">frames</th>
                     <th class="text-center">height</th>
                     <th class="text-center">width</th>
                     <th class="text-center">created</th>
@@ -26,8 +28,10 @@
                 <tbody>
                 {% for v in video_list %}
                     <tr>
+                        <td>{%  if v.dataset %}Dataset {% else %}Video {% endif %}</td>
                         <td>{{ v.name }} </td>
                         <td class="text-right">{{ v.length_in_seconds }} </td>
+                        <td class="text-right">{{ v.frames }} </td>
                         <td class="text-right">{{ v.height }} </td>
                         <td class="text-right">{{ v.width }} </td>
                         <td class="text-center">{{ v.created }}</td>

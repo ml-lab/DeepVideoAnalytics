@@ -58,6 +58,8 @@ def extract_frames(video_id):
         dv.width = v.width
         dv.save()
     frames = v.extract_frames()
+    dv.frames = len(frames)
+    dv.save()
     for f in frames:
         df = Frame()
         df.time_seconds = f.time_seconds

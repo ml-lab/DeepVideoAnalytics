@@ -148,5 +148,4 @@ class Resnet18Indexer(BaseIndexer):
 
 INDEXERS = {
     'resnet101':Resnet101Indexer(),
-    'resnet18':Resnet18Indexer()
 }
