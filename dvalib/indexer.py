@@ -118,3 +118,4 @@ class AlexnetIndexer(BaseIndexer):
 INDEXERS = {
     'alex':AlexnetIndexer(),
 }
+
