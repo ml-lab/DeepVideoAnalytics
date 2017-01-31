@@ -50,15 +50,12 @@ class WVideo(object):
         if not self.dvideo.dataset:
             frame_seconds = set()
             for i in range(int(self.duration)):
-                if i % 10 == 0:
+                if i % 2 == 0:
                     frame_seconds.add(i)
-                    frame_seconds.add(i+1)
             output_dir = "{}/{}/{}/".format(self.media_dir,self.primary_key,'frames')
             for s in frame_seconds:
                 fname = "{}.jpg".format(s)
-                command = 'ffmpeg -accurate_seek -ss {} -i {} -y -frames:v 1 -vf scale=600:-1 {}/{}'.format(s,
-                                                                                                         self.local_path,
-                                                                                                         output_dir,fname)
+                command = 'ffmpeg -accurate_seek -ss {} -i {} -y -frames:v 1 -vf scale=600:-1 {}/{}'.format(s,self.local_path,output_dir,fname)
                 extract = sp.Popen(shlex.split(command))
                 extract.wait()
                 if extract.returncode != 0:
